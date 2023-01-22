@@ -4,6 +4,7 @@ import { SideTeam } from '../../team/SideTeam';
 import { BracketMatchup } from '../BracketMatchup/BracketMatchup';
 import { Orientation } from '../util';
 import { generate } from 'shortid';
+import { BracketBlank } from '../BracketBlank';
 
 export const BRACKET_CLASSNAMES: string[] = [
     "grid"
@@ -51,44 +52,54 @@ export const Bracket: FC<BracketProps> = (props) => {
     const width = _bracket[0].length;
     const rowTemplate: string = Array(_bracket.length).fill("1fr").join(" ");
     const colTemplate: string = Array(_bracket[0].length).fill("1fr").join(" ");
+    const continuation = Array(width).fill(false);
 
     const bracketEntries = _bracket.map((row, rowNo,) => {
         return row.map((bracketEntry, colNo) => {
+            if (bracketEntry[0]) {
+                continuation[colNo] = !continuation[colNo];
+            }
+
             const orientation = getOrientation(bracketEntry[0] && {
                 colNo,
                 totCol: width,
                 rowNo,
                 totRow: height,
             });
-            console.log('orientation: ', orientation);
-            switch (orientation) {
-                case Orientation.UP: {
-                    return <BracketMatchup {...bracketEntry[0]} key={generate()} up={true} />
-                    break;
-                }
-                case Orientation.DOWN: {
-                    return <BracketMatchup {...bracketEntry[0]} key={generate()} up={false} />
-                    break;
-                }
-                case Orientation.NONE: {
-                    const away = bracketEntry[0]?.away;
-                    const home = bracketEntry[0]?.home;
-                    return (
-                        <div key={generate()}>
-                            <SideTeam team={away} key={generate()} />
-                            <SideTeam team={home} key={generate()} />
-                        </div>
-                    )
-                    break
-                }
-                default: {
-                    return (<div key={generate()}></div>);
-                    break;
-                }
+
+
+            if(!bracketEntry[0]) {
+                return <BracketBlank continuation={ continuation[colNo] }/>
             }
+            return <BracketMatchup {...bracketEntry[0]} key={generate()} inheritance={colNo > 0} up={!continuation[colNo]} />;
+
+
+
+
+            // switch (orientation) {
+            //     case Orientation.UP: {
+            //         return <BracketMatchup {...bracketEntry[0]} key={generate()} up={!continuation[colNo]} />
+            //         break;
+            //     }
+            //     case Orientation.DOWN: {
+            //         return <BracketMatchup {...bracketEntry[0]} key={generate()} up={!continuation[colNo]} />
+            //         break;
+            //     }
+            //     case Orientation.NONE: {
+            //         const away = bracketEntry[0]?.away;
+            //         const home = bracketEntry[0]?.home;
+            //         return (
+            //             <BracketMatchup {...bracketEntry[0]} key={generate()} inheritance={colNo > 0}/>
+            //         )
+            //         break
+            //     }
+            //     default: {
+            //         return <BracketBlank continuation={ continuation[colNo] } />;
+            //         break;
+            //     }
+            // }
         })
     }).flat();
-    console.log('bracketEntries: ', bracketEntries);
 
     return (
         <div
