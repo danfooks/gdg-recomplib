@@ -1,6 +1,6 @@
 {
-  "name": "gdg-clib",
-  "version": "0.1.94",
+  "name": "gdg-component-library",
+  "version": "0.1.95",
   "main": "./dist/gdg-clib.umd.js",
   "module": "./dist/gdg-clib.es.js",
   "types": "./dist/index.d.ts",
@@ -29,7 +29,7 @@
     "decimal.js": "^10.4.2",
     "dotenv": "^16.0.3",
     "fast-levenshtein": "^3.0.0",
-    "firebase": "^9.14.0",
+    "firebase": "^9.23.0",
     "framer-motion": "^6.5.0",
     "fs-extra": "^10.0.0",
     "gdgwep": "^0.0.3",
